@@ -1,0 +1,5 @@
+16.04 kinetic버전의 ROS를 사용
+https://emanual.robotis.com/docs/en/platform/openmanipulator_x/ros_setup/#ros-setup
+
+우분투 install tutorials
+https://ubuntu.com/tutorials/install-ubuntu-desktop#1-overview

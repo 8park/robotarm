@@ -1,0 +1,227 @@
+모두를 위한 리눅스 프로그래밍 p69
+
+
+read 형식
+
+#include <unistd.h>
+
+ssize_t read(int fd, void *buf, size_t bufsize);
+
+write 형식
+
+#include <unistd.h>
+
+ssize_t write(int fd, void *buf, size_t bufsize);
+
+open
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int open(const char *path, int flags);
+int open(const char *path, int flags, mode_t mode);
+
+flags -> O_RDONLY, O_WRONLY, O_RDWR
+O_CREATE, O_EXCL, O_TRUNC, O_APPEND
+
+close
+#include <unistd.h>
+
+int close(int fd);
+
+
+
+cat = concatenate (연결하다)
+
+die() 에러메시지를 출력하고 프로그램 종료
+
+for(;;) 무한루프
+
+파일을 끝까지 읽은 후에는 read가 0을 반환
+
+errno 시스템 콜이 실패할 경우 원인을 나타내는 정수가 설정
+man 페이지에서 확인 가능
+
+die()는 perror()을 사용하여 에러메시지를 출력하고 exit()로 종료하는 함수
+
+s가 빈 문자열이 아닐 경우 s를 출력 후 에러메시지 출력
+strerror 다시 함수를 호출할 때 덮어써지므로 보통 즉시 출력
+
+
+파일 오프셋 file offset
+ [lseek]
+파일 디스크립터 내부의 파일 오프셋을 지정한 위치로 이동
+
+Off_t lseek_(int fd, off_t offset, int whence);
+whence flag의 의미가 각각 있음 
+
+dup(2), dup2(2) : 복제
+int dup (int odlfd);
+int dup2 (int odlfd, int newfd);
+
+ioctl(2)
+int ioctl(int fd, unsigned long request, ...);
+
+스트림이 연결된 디바이스에 특화된 파일을 모두 포함하는 시스템 콜
+request에 어떤 작업을 할 것인가 지정,
+request 목록은 man ioctl_list 에 존재
+... 가변 인자, 원하는 만큼 넣어도 됨.
+
+fcntl(2)
+ioctl()의 기능 중 파일 디스크럽터 관련 작업을 분리하려고 만들어진것
+
+fcntl(fd, F_DUPFD)와 dup(fd)는 동일한 기능
+
+
+
+표준 입출력 라이브러리
+standard I/O library -> stdio
+
+buffered mode / unbuffered mode (man setvbuf참고)
+
+file type -> typedef
+
+0 표준 입력 stin
+1 표준 출력 stout
+2 표준 에러 출력 stderr
+
+
+fopen
+#include <stdio.h>
+
+FILE *fopen(const char *path, const char *mode);
+
+"r", "w" "a"(이어쓰기) "r+"(읽고쓰기, 파일 존재) "w+" (읽고쓰기, 파일 생성 가능) "a+" (동)
+
+fclose
+#include <stdio.h>
+
+int fclose(FILE *stream);
+
+성공적 수행시 0을 반환 / 실패시 EOF 반환(-1) 원인 나타내는 숫자를 errno에 설정
+
+
+
+바이트 단위 입출력
+#include <stdio.h>
+
+int fgetc(FILE *stream); 
+int fputc(int c, FILE *stream);
+
+getc()와 putc()는 매크로
+
+int getchar(void);
+int putchar(int c);
+
+int ungetc(int c, FILE *stream);
+문자열 구분을 하기위해 (11+24)일때 2까지 읽어야 끝난지 알기 때문에)
+
+
+-v 컴파일 과정을 화면에 출력
+-o 출력 파일 이름 설정
+-Wall 컴파일 진행, warning도 봄
+-W 나머지 warning도 함께
+-On 최적화 옵션 (보통 2)
+-c *.o 파일 생성
+
+
+줄단위 입력 API 
+char *fgets(char *buf, int size, FILE *stream);
+
+한줄을 전부 읽었는지 혹은 버퍼의 크기만큼 읽었는지 알 수 없으므로
+getc()를 사용하여 한 문자 더 읽어보고 다시 되돌려 놓는 함수를 쓰기도 한다.
+
+
+*gets() 라는 함수는 버퍼 오버플로라고 지정한 버퍼를 초과해서 사용하는 문제가 생길 수 있으니
+사용 하지 않는게 좋다.
+char *gets(char *buf);
+buf를 지정하는 인자가 없다...
+
+출력 API
+int fputs(const char *buf, FILE*stream);
+
+int puts(const char *buf); 
+줄 단위 처리를 의식한 출력 api다
+
+fgets() - fputs() 로 조합하는게 좋다
+
+int printf(const char *fmt, ...);
+int fprintf(FILE *stream, const char *fmt, ...);
+pinttf의 man페이지에서 확인 가능
+%와 조합하여 출력포멧 지정
+
+%c unsigned char형의 값을 문자로 출력
+%s unsigned char*형의 값을 문자열로 출력
+%d %i 정수형 값을 10진수 표기로 출력
+
+%n~ -> n번쨰 자리가 최소 출력 자릿수가 된다.
+
+
+size_t fread(void *buf, size_t size, size_t nmemb, FILE *stream);
+size_t fwrite(const void *buf, size_t size, size_t nmemb, FILE *stream);
+
+최대 size*nmemb 바이트의 데이터를 읽어들여, buf가 가리키는 메모리 영역에 쓴다.
+
+*# = #include <stdio.h>
+*F*s = FILE *stream
+
+파일 오프셋 작업
+
+int fseeko(F*s, off_t offset, int whence);
+long-32비트에선 int fseek(F*s, long offset, int whence);
+
+파일 오프셋 값 반환
+off_t ftello(F*s);
+loing ftell(F*s);
+
+오프셋 값 초기화
+void rewind(F*s);
+
+
+stream이 감싸고 있는 파일 디스크립터 반환
+
+int fileno(F*s);
+
+파일 디스크립터 fd를 감싸고 있는 파일을 만들어서 포인트를 반환
+F*s(int fd, const char *mode);
+
+이 두가지를 혼용하면 안된다.
+
+
+버퍼링 작업
+int fflush(F*s);
+stream이 버퍼링 하고 있는 내용을 즉시 write()하게 하는 API
+
+setvbuf() 
+man setvbuf 참조
+
+
+각종플래그를 처리하는 API
+
+int feof(F*s);
+인자로 지정한 스트림의 EOF플래그를 가져온다.
+잘못쓰기 쉽다.
+
+int ferror(F*s);
+인자로 지정한 스트림의 에러 플래그를 가져온다. 
+fread()와 같은 반환값을 에러와 EOF로 구분할 수 없는 API에서 에러만을 확인 하기 위해 사용
+
+
+void clearerr(F*s);
+지정한 stream 의 에러 플래그와 EOF플래그를 지운다.
+
+몇번이고 EOF가 발생할 수 있을 때 stdio는 한번이라도 EOF를 반환하면 EOF플래그를 설정하기 때문에 
+이후 read는 호출하지 않음. 그래서 플래그 클리어로 사용할 수 있음.
+
+
+strace로 stdio의 동작 확인 가능
+
+int atoi(const char *str);
+long atol(const char *str);
+정수가 문자열로 들어 있는 str에서 정숫값을 반환한다.
+
+
+fgets 는 버퍼를 만들어서 넘겨야함, 한줄의 길이를 제한
+gets 이와같은 문제에서 gets를 사용해도 문제가 생기지도 않고 불편하지도 않기 때문.
+

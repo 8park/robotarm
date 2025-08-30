@@ -1,0 +1,12 @@
+src -> git clone
+
+rosdep = 의존성 파일 자동으로 다 깔아줌
+
+rosdep install --from-paths src --ignore-src -r -y
+
+catkin_ws -> catkin_make
+
+
+alias [사용할 단어]='사용할 내용'
+
+-> 터미널 새로 열어야 실행됨

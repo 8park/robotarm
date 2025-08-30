@@ -1,0 +1,23 @@
+유성기어 기어비
+
+http://blog.naver.com/PostView.nhn?blogId=lagrange0115&logNo=220808369051&parentCategoryNo=&categoryNo=10&viewDate=&isShowPopularPosts=false&from=postView
+
+헬리컬 잇수/직경 - 4.5 (잇수 18)
+
+선기어 잇수/직경 -4.8
+플레닛 잇수/직경 -6.4 
+
+1+ Ring기어 잇수 / Sun 기어 잇수
+
+선기어 24
+링기어 90
+플레닛 32
+
+
+T_s = 4.75 T_c
+
+
+실험결과
+선기어 4.75바퀴 회전  -> 링기어 1바퀴 회전
+
+기어비 4.75 ''

@@ -1,0 +1,16 @@
+robotis SDK 
+
+SDK란? : 소프트웨어 개발 키트 [Software Development Kit]
+소프트웨어 개발자가 특정 운영체제용 응용프로그램을 만들 수 있게 해주는 
+소스(Source)와 도구 패키지이다.
+
+https://github.com/ROBOTIS-GIT/DynamixelSDK/releases
+
+DynamixelSDK 3.7.31 (Support All except ROS 2)
+Support All except ROS 2 = ROS2를 제외한 모든 지원 = ROS1 지원
+
+DynamixelSDK 3.7.30 (Support ROS 2 Only)
+Support ROS 2 Only = ROS2만 지원
+
+-> ROS로 진행할 테니 Support All except ROS 2사용
+

@@ -1,0 +1,97 @@
+8.4 
+
+P.32 토픽
+
+~/catkin_ws/src/my_awesome_code/src/topic_publisher.py
+
+#!/usr/bin/env python
+쉬뱅(shebang)이라고 알려진 인터프리터 지시어.
+운영체제로 하여금 이 파일이 파이썬 파일이며, 파이썬 인터프리터로 전달되도록 한다.
+
+chmod u+x topic_publisher.py
+chmod 명령어를 사용하여 실행 권한을 부여해야 한다.
+
+import rospy 
+파이선 노드에 있는 것으로 필요한 기능을 모두 임포트 한다.
+
+from std_msgs.msg import Int32
+토픽을 통하여 전송할 메시지 정의를 임포트
+ROS표준 메시지 패키지인 std_msgs에 정의된 32비트 정수를 사용한다.
+
+다른 패키지에 있는 메시지를 사용하므로 
+packaage.xml 파일에 의존성을 추가해서 ROS 빌드 시스템에 알려 주어야 한다.
+
+<depend package="std_msgs" />
+이러한 의존성 없이는 ROS가 메시지 정의를 찾을 수 없고, 노드를 실행 될 수 없게 된다.
+
+노드를 초기화 한 후 Publisher를 통하여 토픽을 광고한다
+
+pub = rospy.Publisher('counter', Int32)
+토픽에 counter라는 이름을 부여하고, 전송될 메시지의 자료형이 Int32임을 알려준다.
+
+(시스템 내부에서는 발행자가 roscore에 연결을 설정, 관련정보를 보낸다.
+다른 노드가 counter 토픽을 구독하려고 할 때 roscore는 발행자와 구동자 목록을 공유한다.
+그 이후 발행자와 구독자 노드 사이를 직접 연결하는 데 사용한다.
+
+이 시점에서 토픽은 광고되어 다른 노드에서 구독할 수 있게 된다.
+
+rate = rospy.Rate(2)
+
+count = 0
+
+while not rospy.is_shutdown():
+  pub.publish(count)
+  count += 1
+  rate.sleep()
+
+발행 속도를 헤르츠 단위로 설정. (여기서는 초당 두 번 발행)
+
+is_shutdown() 함수는 노드가 종료될 상황이면 true를 반환, 아니면 False를 반환.
+while 반복문을 빠져 나갈지 여부를 결정할 수 있게 한다.
+
+while 반복문 안에서는 counter의 현재 값을 발행하고 하나씩 값을 증가시킨 다음, 일시정지
+rate.sleep()을 호출하면 대략 2Hz주기로 while 반복문 몸체를 실행할 수 있을 정도로 
+충분한 시간만큼 일시정지한다.
+
+
+roscore 실행
+rostopic list 
+어떤 토픽이 사용할 수 있는지 볼 수 있다.
+로깅과 디버깅 목적으로 사용
+
+rostopic -h
+사용할 수 있는 인자를 보기 위해
+
+
+//////
+다른 터미널을 열어 앞에서 본 노드를 실행한다.
+basics 패키지가 작업 공간 안에 있어야 하며, 해당 작업 공간에 대한 설정 파일을 미리 실행해야만한다.
+
+rosrun basics topic_publisher.py
+---> [rospcak] Error : package 'basics' not found
+
+rospack error package 'basics' not found
+http://wiki.ros.org/ROS/Tutorials/ExaminingPublisherSubscriber
+
+$ roscore 
+실행한 상태로
+
+# In your catkin workspace
+$ cd ~/catkin_ws
+$ source ./devel/setup.bash
+을 실행해 줘야함
+
+(//
+$ rosrun beginner_tutorials talker      (C++)
+$ rosrun beginner_tutorials talker.py   (Python) 
+$ rosrun beginner_tutorials listener     (C++) 
+)
+
+
+cd ~/ 은 home을 기준으로 이동이 됨
+
+roscd -> source를 지정해준다면 roscd로 이동 가능
+
+즉 source /opt/ros/groovy/setup.sh -> opt/ros/melodic 으로 이동
+   source ~/catkin_ws/devel/setup.bash  -> catkin_ws/devel 로 이동
+
